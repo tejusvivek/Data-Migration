@@ -1,0 +1,28 @@
+{
+	"name": "onPremSqlServer1",
+	"properties": {
+		"description": "On premises SQL server as source for migration",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "TEJUS",
+			"database": "BankOfAmerica",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "tejus",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "onPremSQLAuth"
+			}
+		},
+		"connectVia": {
+			"referenceName": "selfhostedintegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
