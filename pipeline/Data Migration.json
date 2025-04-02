@@ -1,0 +1,316 @@
+{
+	"name": "Data Migration",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup Tables",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "SELECT * FROM BankOfAmerica.INFORMATION_SCHEMA.TABLES",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "onPremSqlServer",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup Tables').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Export data",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "@{concat('SELECT TOP 10000 * FROM ',item().TABLE_SCHEMA,'.',item().TABLE_NAME)}",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "AccountID",
+												"type": "Decimal",
+												"physicalType": "decimal",
+												"scale": 0,
+												"precision": 20
+											},
+											"sink": {
+												"name": "AccountID",
+												"type": "String",
+												"physicalType": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CustomerID",
+												"type": "Decimal",
+												"physicalType": "decimal",
+												"scale": 0,
+												"precision": 20
+											},
+											"sink": {
+												"name": "CustomerID",
+												"type": "String",
+												"physicalType": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "AccountType",
+												"type": "String",
+												"physicalType": "varchar"
+											},
+											"sink": {
+												"name": "AccountType",
+												"type": "String",
+												"physicalType": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "Balance",
+												"type": "Double",
+												"physicalType": "float"
+											},
+											"sink": {
+												"name": "Balance",
+												"type": "String",
+												"physicalType": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CreatedDate",
+												"type": "DateTime",
+												"physicalType": "datetime"
+											},
+											"sink": {
+												"name": "CreatedDate",
+												"type": "String",
+												"physicalType": "String"
+											}
+										}
+									],
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "onPremSqlServerTable",
+									"type": "DatasetReference",
+									"parameters": {
+										"schemaName": {
+											"value": "@item().TABLE_SCHEMA",
+											"type": "Expression"
+										},
+										"tableName": {
+											"value": "@item().TABLE_NAME",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "migratedData",
+									"type": "DatasetReference",
+									"parameters": {
+										"tableName": {
+											"value": "@item().TABLE_NAME",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "AccountID",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 20
+								},
+								"sink": {
+									"name": "AccountID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CustomerID",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 20
+								},
+								"sink": {
+									"name": "CustomerID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AccountType",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "AccountType",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Balance",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Balance",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CreatedDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "CreatedDate",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "onPremSqlServer",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "migratedData",
+						"type": "DatasetReference",
+						"parameters": {
+							"tableName": "accounts"
+						}
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
