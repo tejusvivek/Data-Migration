@@ -61,6 +61,10 @@
 							"typeProperties": {
 								"source": {
 									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "@{concat('SELECT TOP 100000 * FROM ',item().TABLE_SCHEMA,'.',item().TABLE_NAME)}",
+										"type": "Expression"
+									},
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
