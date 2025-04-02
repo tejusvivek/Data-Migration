@@ -7,38 +7,10 @@
 		},
 		"annotations": [],
 		"type": "SqlServerTable",
-		"schema": [
-			{
-				"name": "AccountID",
-				"type": "decimal",
-				"precision": 20,
-				"scale": 0
-			},
-			{
-				"name": "CustomerID",
-				"type": "decimal",
-				"precision": 20,
-				"scale": 0
-			},
-			{
-				"name": "AccountType",
-				"type": "varchar"
-			},
-			{
-				"name": "Balance",
-				"type": "float",
-				"precision": 15
-			},
-			{
-				"name": "CreatedDate",
-				"type": "datetime",
-				"precision": 23,
-				"scale": 3
-			}
-		],
+		"schema": [],
 		"typeProperties": {
-			"schema": "dbo",
-			"table": "accounts"
+			"schema": "",
+			"table": ""
 		}
 	}
 }
