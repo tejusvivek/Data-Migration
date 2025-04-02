@@ -1,0 +1,9 @@
+{
+	"name": "migrationadf21",
+	"location": "centralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "ad038a02-1192-4e6e-b8c7-0462d5d836de",
+		"tenantId": "4249dcf4-f4a1-44f9-940d-14b50a777dd8"
+	}
+}
