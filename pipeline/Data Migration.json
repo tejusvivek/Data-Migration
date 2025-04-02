@@ -61,10 +61,6 @@
 							"typeProperties": {
 								"source": {
 									"type": "SqlServerSource",
-									"sqlReaderQuery": {
-										"value": "@{concat('SELECT TOP 100000 * FROM ',item().TABLE_SCHEMA,'.',item().TABLE_NAME)}",
-										"type": "Expression"
-									},
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
@@ -80,6 +76,7 @@
 									}
 								},
 								"enableStaging": false,
+								"parallelCopies": 5,
 								"translator": {
 									"type": "TabularTranslator",
 									"typeConversion": true,
@@ -120,129 +117,6 @@
 						}
 					]
 				}
-			},
-			{
-				"name": "Copy data1",
-				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "SqlServerSource",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"name": "AccountID",
-									"type": "Decimal",
-									"physicalType": "decimal",
-									"scale": 0,
-									"precision": 20
-								},
-								"sink": {
-									"name": "AccountID",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "CustomerID",
-									"type": "Decimal",
-									"physicalType": "decimal",
-									"scale": 0,
-									"precision": 20
-								},
-								"sink": {
-									"name": "CustomerID",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "AccountType",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "AccountType",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Balance",
-									"type": "Double",
-									"physicalType": "float"
-								},
-								"sink": {
-									"name": "Balance",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "CreatedDate",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								},
-								"sink": {
-									"name": "CreatedDate",
-									"type": "String",
-									"physicalType": "String"
-								}
-							}
-						],
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "onPremSqlServer",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "migratedData",
-						"type": "DatasetReference",
-						"parameters": {
-							"tableName": "accounts"
-						}
-					}
-				]
 			}
 		],
 		"annotations": []
