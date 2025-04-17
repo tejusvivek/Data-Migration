@@ -91,11 +91,11 @@
 			}
 		],
 		"typeProperties": {
-			"schema": "DBO",
-			"table": {
-				"value": "@dataset().snowflakeTableName",
+			"schema": {
+				"value": "DBO",
 				"type": "Expression"
-			}
+			},
+			"table": "@dataset().snowflakeTableName"
 		}
 	}
 }

@@ -1,19 +1,25 @@
 {
-	"name": "LookupGoldTables",
+	"name": "lookupSchema",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureDataLakeStorage1",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
-		"type": "Parquet",
+		"type": "Json",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileSystem": "gold"
-			},
-			"compressionCodec": "snappy"
+				"fileSystem": "schema"
+			}
 		},
-		"schema": []
+		"schema": {
+			"type": "object",
+			"properties": {
+				"ddl": {
+					"type": "string"
+				}
+			}
+		}
 	}
 }
