@@ -95,7 +95,10 @@
 				"value": "DBO",
 				"type": "Expression"
 			},
-			"table": "@dataset().snowflakeTableName"
+			"table": {
+				"value": "@toUpper(dataset().snowflakeTableName)",
+				"type": "Expression"
+			}
 		}
 	}
 }
