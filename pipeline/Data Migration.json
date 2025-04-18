@@ -231,6 +231,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -360,7 +361,7 @@
 										"wildcardFileName": "*.parquet",
 										"enablePartitionDiscovery": true,
 										"partitionRootPath": {
-											"value": "@concat('gold/',item().name,'/')",
+											"value": "@concat('gold/',item().name)",
 											"type": "Expression"
 										}
 									},
@@ -381,7 +382,12 @@
 										"type": "LinkedServiceReference"
 									},
 									"path": "staging",
-									"enableCompression": true
+									"enableCompression": true,
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [],
+										"enableSchemaDrift": true
+									}
 								}
 							},
 							"inputs": [
